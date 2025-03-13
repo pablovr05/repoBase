@@ -338,3 +338,13 @@ describe('Tests d\'Integració VideoController', () => {
 - [Documentació oficial de Sequelize](https://sequelize.org/master/)
 - [Guia Express.js](https://expressjs.com/en/guide/routing.html)
 - [Testing amb Jest](https://jestjs.io/docs/getting-started)
+
+
+## FUNCIONALIADES DE CREAR ALGO CON SWAGGER
+
+setCategories(categories)
+addCategory(category)
+addCategories(categories)
+getCategories()
+removeCategory(category)
+removeCategories(categories)
