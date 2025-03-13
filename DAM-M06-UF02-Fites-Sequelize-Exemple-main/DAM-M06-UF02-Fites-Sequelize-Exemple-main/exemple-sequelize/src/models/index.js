@@ -11,6 +11,8 @@ const Video = require('./Video');
 const Categoria = require('./Categoria');
 const Llista = require('./Llista')
 
+const Usuari = require('./Usuari');
+
 // Definir el model VideosCategories que servirà com a taula d'unió
 const VideosCategories = sequelize.define('VideosCategories', {
   video_id: {
@@ -53,6 +55,73 @@ const LlistesVideos = sequelize.define('LlistesVideos', {
   }
 });
 
+const VideosComentaris = sequelize.define('VideosComentaris', {
+  videoId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Video,
+      key: 'id'
+    }
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Usuari,
+      key: 'id'
+    }
+  },
+  comentari: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
+}, {
+  tableName: 'VideosComentaris',
+  timestamps: false,
+  indexes: [
+    {
+      unique: true,
+      fields: ['videoId', 'userId', 'comentari']
+    }
+  ]
+});
+
+Video.belongsToMany(Usuari, { through: VideosComentaris, foreignKey: 'videoId' });
+Usuari.belongsToMany(Video, { through: VideosComentaris, foreignKey: 'userId' });
+
+const VideosValoracions = sequelize.define('VideosValoracions', {
+  videoId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Video,
+      key: 'id'
+    }
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Usuari,
+      key: 'id'
+    }
+  },
+  esLike: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  }
+}, {
+  tableName: 'VideosValoracions',
+  timestamps: false,
+  indexes: [
+    {
+      unique: true,
+      fields: ['videoId', 'userId', 'esLike']
+    }
+  ]
+});
+
+Video.belongsToMany(Usuari, { through: VideosValoracions, foreignKey: 'videoId' });
+Usuari.belongsTo(Video, { through: VideosValoracions, foreignKey: 'userId' });
+
+
 // Relació 1:1 entre Youtuber i PerfilYoutuber
 Youtuber.hasOne(PerfilYoutuber, { foreignKey: 'youtuber_id' });
 PerfilYoutuber.belongsTo(Youtuber, { foreignKey: 'youtuber_id' });
@@ -77,4 +146,7 @@ module.exports = {
   Llista,
   VideosCategories,
   LlistesVideos,
+  Usuari,
+  VideosValoracions,
+  VideosComentaris,
 };
