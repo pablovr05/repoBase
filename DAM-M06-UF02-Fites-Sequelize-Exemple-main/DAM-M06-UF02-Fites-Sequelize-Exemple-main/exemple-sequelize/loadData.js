@@ -15,7 +15,7 @@ const { sequelize } = require('./src/config/database');
 const { logger } = require('./src/config/logger');
 
 // Importar models
-const { Youtuber, PerfilYoutuber, Video, Categoria, VideosCategories } = require('./src/models');
+const { Youtuber, PerfilYoutuber, Video, Categoria, VideosCategories, Llista } = require('./src/models');
 
 // Rutes als arxius CSV
 const BASE_PATH = path.join(__dirname, process.env.DATA_DIR_PATH, 'youtubers_programacio');
@@ -24,7 +24,8 @@ const CSV_FILES = {
   PERFILS: path.join(BASE_PATH, 'youtuber_profiles.csv'),
   CATEGORIES: path.join(BASE_PATH, 'categories.csv'),
   VIDEOS: path.join(BASE_PATH, 'videos.csv'),
-  VIDEOS_CATEGORIES: path.join(BASE_PATH, 'video_categories.csv')
+  VIDEOS_CATEGORIES: path.join(BASE_PATH, 'video_categories.csv'),
+  LLISTES: path.join(BASE_PATH, 'llistes.csv')
 };
 
 /**
@@ -181,6 +182,30 @@ async function carregarVideosCategories(videos_categories) {
   }
 }
 
+
+/**
+ * Carrega les dades de les llistes
+ * @param {Array} llistes Dades de llistes
+ */
+async function carregarLlistes(llistes) {
+  try {
+    logger.info(`Carregant ${llistes.length} llistes...`);
+    
+    for (const llista of llistes) {
+      await Llista.create({
+        id: llista.id,
+        nom_llista: llista.nom_llista,
+        descripcio: llista.descripcio,
+      });
+    }
+    
+    logger.info("Llistes carregades correctament");
+  } catch (error) {
+    logger.error("Error carregant llistes:", error);
+    throw error;
+  }
+}
+
 /**
  * Funció principal que coordina tot el procés de càrrega
  */
@@ -201,6 +226,7 @@ async function carregarTotesDades() {
     const categories = await llegirFitxerCsv(CSV_FILES.CATEGORIES);
     const videos = await llegirFitxerCsv(CSV_FILES.VIDEOS);
     const videos_categories = await llegirFitxerCsv(CSV_FILES.VIDEOS_CATEGORIES);
+    const llistes = await llegirFitxerCsv(CSV_FILES.LLISTES)
     
     // Carregar les dades en ordre per respectar dependències
     await carregarYoutubers(youtubers);
@@ -208,6 +234,7 @@ async function carregarTotesDades() {
     await carregarCategories(categories);
     await carregarVideos(videos);
     await carregarVideosCategories(videos_categories);
+    await carregarLlistes(llistes);
     
     logger.info("Totes les dades han estat carregades correctament a la base de dades!");
     
