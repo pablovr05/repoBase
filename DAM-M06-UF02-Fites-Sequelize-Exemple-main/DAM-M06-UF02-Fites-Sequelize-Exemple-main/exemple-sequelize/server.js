@@ -20,6 +20,7 @@ const { logger, expressLogger } = require('./src/config/logger');
 const rutesYoutuber = require('./src/routes/rutesYoutuber');
 const rutesVideo = require('./src/routes/rutesVideo');
 const rutesCategoria = require('./src/routes/rutesCategoria');
+const rutesLlista = require('./src/routes/rutesLlista')
 
 // Crear instància d'Express
 const app = express();
@@ -57,6 +58,7 @@ app.use(expressLogger);
 app.use('/api/youtubers', rutesYoutuber);
 app.use('/api/videos', rutesVideo);
 app.use('/api/categories', rutesCategoria);
+app.use('api/llistes', rutesLlista)
 
 // Gestió centralitzada d'errors (importada del mòdul gestorErrors)
 app.use(gestorErrors);
@@ -99,7 +101,8 @@ async function iniciarServidor() {
             logger.info('Rutes disponibles:', {
                 youtubers: '/api/youtubers',
                 videos: '/api/videos',
-                categories: '/api/categories'
+                categories: '/api/categories',
+                llistes: '/api/llistes',
             });
         });
     } catch (error) {
