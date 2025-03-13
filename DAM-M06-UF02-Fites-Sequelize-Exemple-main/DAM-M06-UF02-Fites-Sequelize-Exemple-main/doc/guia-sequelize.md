@@ -348,3 +348,34 @@ addCategories(categories)
 getCategories()
 removeCategory(category)
 removeCategories(categories)
+
+const { Video } = require('./models');  // Suponiendo que el modelo 'Video' está importado
+
+async function buscarYEliminarVideo(id) {
+  try {
+    // Buscar el video por su ID
+    const video = await Video.findOne({
+      where: { id: id }  // Aquí debes usar el ID o cualquier otro campo para buscar el video
+    });
+
+    // Verificar si el video existe
+    if (!video) {
+      console.log('No se ha encontrado el video con ese ID');
+      return;  // No hacemos nada si no se encuentra el video
+    }
+
+    // Eliminar el video
+    await video.destroy();  // Esto elimina el video de la base de datos
+    console.log('Video eliminado con éxito');
+  } catch (error) {
+    console.error('Error al eliminar el video:', error);
+  }
+}
+
+Lo que hay que cambiar primer es el server.js, hay dos indices que tienen cosas, el index del chat routes en caso de que se agregue una nueva y el de models, hay que añadir un nuevo modelo además de añadir el modela de tabla en la base de datos pertinente, las relacionesse hacen a traves de la cresacion de una columna nueva en la base de datsop y hayq ue aañadir las duirversas columnas que toquen, los metadatos deben corres ponde tanto con el del yagger como con el del swagger, las rutas bien definnidas `porque si no peta el cors y hay que tener cuidad con definir las rutas correctament.
+
+El resto de la configuración hace falta tocarla ni añadir nada que corresponda.
+
+En cuanto a los metadatos se deben responder correctamente las categorias así como el tipo de dato.
+
+Crear, eliminar, editar no creo pero se va a tener que hacer y esta el repo de imagia2 para utilizar.
