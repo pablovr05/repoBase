@@ -22,6 +22,8 @@ const rutesVideo = require('./src/routes/rutesVideo');
 const rutesCategoria = require('./src/routes/rutesCategoria');
 const rutesLlista = require('./src/routes/rutesLlista')
 
+const rutesUsuari = require('./src/routes/rutesUsuari')
+
 // Crear instància d'Express
 const app = express();
 
@@ -59,6 +61,7 @@ app.use('/api/youtubers', rutesYoutuber);
 app.use('/api/videos', rutesVideo);
 app.use('/api/categories', rutesCategoria);
 app.use('/api/llistes', rutesLlista)
+app.use('/api', rutesUsuari)
 
 // Gestió centralitzada d'errors (importada del mòdul gestorErrors)
 app.use(gestorErrors);

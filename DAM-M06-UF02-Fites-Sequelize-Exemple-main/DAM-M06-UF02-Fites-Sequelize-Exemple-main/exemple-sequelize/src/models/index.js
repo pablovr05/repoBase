@@ -58,6 +58,7 @@ const LlistesVideos = sequelize.define('LlistesVideos', {
 const VideosComentaris = sequelize.define('VideosComentaris', {
   videoId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
       model: Video,
       key: 'id'
@@ -65,6 +66,7 @@ const VideosComentaris = sequelize.define('VideosComentaris', {
   },
   userId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
       model: Usuari,
       key: 'id'
@@ -77,13 +79,8 @@ const VideosComentaris = sequelize.define('VideosComentaris', {
 }, {
   tableName: 'VideosComentaris',
   timestamps: false,
-  indexes: [
-    {
-      unique: true,
-      fields: ['videoId', 'userId', 'comentari']
-    }
-  ]
 });
+
 
 Video.belongsToMany(Usuari, { through: VideosComentaris, foreignKey: 'videoId' });
 Usuari.belongsToMany(Video, { through: VideosComentaris, foreignKey: 'userId' });
@@ -91,6 +88,7 @@ Usuari.belongsToMany(Video, { through: VideosComentaris, foreignKey: 'userId' })
 const VideosValoracions = sequelize.define('VideosValoracions', {
   videoId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
       model: Video,
       key: 'id'
@@ -98,6 +96,7 @@ const VideosValoracions = sequelize.define('VideosValoracions', {
   },
   userId: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     references: {
       model: Usuari,
       key: 'id'
@@ -110,17 +109,10 @@ const VideosValoracions = sequelize.define('VideosValoracions', {
 }, {
   tableName: 'VideosValoracions',
   timestamps: false,
-  indexes: [
-    {
-      unique: true,
-      fields: ['videoId', 'userId', 'esLike']
-    }
-  ]
 });
 
 Video.belongsToMany(Usuari, { through: VideosValoracions, foreignKey: 'videoId' });
-Usuari.belongsTo(Video, { through: VideosValoracions, foreignKey: 'userId' });
-
+Usuari.belongsToMany(Video, { through: VideosValoracions, foreignKey: 'userId' });
 
 // Relació 1:1 entre Youtuber i PerfilYoutuber
 Youtuber.hasOne(PerfilYoutuber, { foreignKey: 'youtuber_id' });
