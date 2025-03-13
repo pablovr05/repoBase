@@ -1,5 +1,6 @@
-const { Usuari } = require('../models');
+const { Usuari, VideosComentaris, Video } = require('../models');
 const { logger } = require('../config/logger');
+const { Op } = require("sequelize");
 
 /**
  * Afegeix un usuari a la base de dades
@@ -43,11 +44,10 @@ const createUsuari = async (req, res, next) => {
       });
     }
 
-    // Crear el nou usuari
     const newUsuari = await Usuari.create({
       username,
       email,
-      password,  // Assegura't de xifrar la contrasenya abans de guardar-la
+      password,
       nom,
       idioma
     });
@@ -70,6 +70,60 @@ const createUsuari = async (req, res, next) => {
   }
 };
 
+const getComentaris = async (req, res, next) => {
+  try {
+    const { id_usuari } = req.params;
+    logger.info(`Obteniendo comentarios del usuario con ID: ${id_usuari}`);
+
+    const usuari = await Usuari.findByPk(id_usuari);
+    if (!usuari) {
+      return res.status(404).json({
+        ok: false,
+        missatge: "Usuari no trobat",
+      });
+    }
+
+    const comentaris = await VideosComentaris.findAll({
+      where: { userId: id_usuari },
+      include: [
+        {
+          model: Video,
+          attributes: ['id', 'titol', 'url_video'],
+        }
+      ],
+    });
+
+    if (comentaris.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        missatge: "No s'han trobat comentaris per aquest usuari",
+      });
+    }
+
+    const result = comentaris.map(comentari => ({
+      id: comentari.id,
+      text: comentari.comentari,
+      data_creacio: comentari.data_creacio,
+      video: {
+        id: comentari.Video.id,
+        titol: comentari.Video.titol,
+        url_video: comentari.Video.url_video,
+      }
+    }));
+
+    res.status(200).json({
+      ok: true,
+      missatge: "Comentaris de l'usuari obtinguts amb èxit",
+      resultat: result,
+    });
+
+  } catch (error) {
+    logger.error('Error obtenint comentaris de l\'usuari', error);
+    next(error);
+  }
+};
+
 module.exports = {
   createUsuari,
+  getComentaris,
 };

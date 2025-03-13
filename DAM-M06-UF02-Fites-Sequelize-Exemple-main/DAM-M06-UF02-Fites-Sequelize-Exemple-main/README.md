@@ -36,7 +36,7 @@ npm install
 3. Configura les variables d'entorn creant un arxiu `.env` a l'arrel del projecte:
 ```
 NODE_ENV=development
-PORT=3000
+PORT=3010
 DB_PATH=../../data/youtuber_db.sqlite
 DATA_DIR_PATH=../data
 LOG_FILE_PATH=../data/logs
@@ -126,7 +126,7 @@ Els principals endpoints disponibles són:
 La documentació completa de l'API està disponible a través de Swagger UI:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:3010/api-documentacio
 ```
 
 ## Estructura del Projecte

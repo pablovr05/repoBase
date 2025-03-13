@@ -9,11 +9,10 @@ const Youtuber = require('./Youtuber');
 const PerfilYoutuber = require('./PerfilYoutuber');
 const Video = require('./Video');
 const Categoria = require('./Categoria');
-const Llista = require('./Llista')
-
+const Llista = require('./Llista');
 const Usuari = require('./Usuari');
 
-// Definir el model VideosCategories que servirà com a taula d'unió
+// Definir el modelo VideosCategories que servirà com a taula d'unió
 const VideosCategories = sequelize.define('VideosCategories', {
   video_id: {
     type: DataTypes.INTEGER,
@@ -56,9 +55,13 @@ const LlistesVideos = sequelize.define('LlistesVideos', {
 });
 
 const VideosComentaris = sequelize.define('VideosComentaris', {
-  videoId: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true
+  },
+  videoId: {
+    type: DataTypes.INTEGER,
     references: {
       model: Video,
       key: 'id'
@@ -66,7 +69,6 @@ const VideosComentaris = sequelize.define('VideosComentaris', {
   },
   userId: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
     references: {
       model: Usuari,
       key: 'id'
@@ -81,14 +83,20 @@ const VideosComentaris = sequelize.define('VideosComentaris', {
   timestamps: false,
 });
 
+VideosComentaris.belongsTo(Video, { foreignKey: 'videoId' });
+Video.hasMany(VideosComentaris, { foreignKey: 'videoId' });
 
-Video.belongsToMany(Usuari, { through: VideosComentaris, foreignKey: 'videoId' });
-Usuari.belongsToMany(Video, { through: VideosComentaris, foreignKey: 'userId' });
+VideosComentaris.belongsTo(Usuari, { foreignKey: 'userId' });
+Usuari.hasMany(VideosComentaris, { foreignKey: 'userId' });
 
 const VideosValoracions = sequelize.define('VideosValoracions', {
-  videoId: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true
+  },
+  videoId: {
+    type: DataTypes.INTEGER,
     references: {
       model: Video,
       key: 'id'
@@ -96,7 +104,6 @@ const VideosValoracions = sequelize.define('VideosValoracions', {
   },
   userId: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
     references: {
       model: Usuari,
       key: 'id'
@@ -112,21 +119,21 @@ const VideosValoracions = sequelize.define('VideosValoracions', {
 });
 
 Video.belongsToMany(Usuari, { through: VideosValoracions, foreignKey: 'videoId' });
-Usuari.belongsToMany(Video, { through: VideosValoracions, foreignKey: 'userId' });
+Usuari.belongsTo(Video, { through: VideosValoracions, foreignKey: 'userId' });
 
-// Relació 1:1 entre Youtuber i PerfilYoutuber
+// Relación 1:1 entre Youtuber y PerfilYoutuber
 Youtuber.hasOne(PerfilYoutuber, { foreignKey: 'youtuber_id' });
 PerfilYoutuber.belongsTo(Youtuber, { foreignKey: 'youtuber_id' });
 
-// Relació 1:N entre Youtuber i Video
+// Relación 1:N entre Youtuber y Video
 Youtuber.hasMany(Video, { foreignKey: 'youtuber_id' });
 Video.belongsTo(Youtuber, { foreignKey: 'youtuber_id' });
 
-// Relació N:M entre Video i Categoria
+// Relación N:M entre Video y Categoria
 Video.belongsToMany(Categoria, { through: VideosCategories, foreignKey: 'video_id' });
 Categoria.belongsToMany(Video, { through: VideosCategories, foreignKey: 'categoria_id' });
 
-// Relació N:M entre Video i Categoria
+// Relación N:M entre Video y Llista
 Llista.belongsToMany(Video, { through: LlistesVideos, foreignKey: 'llista_id' });
 Video.belongsToMany(Llista, { through: LlistesVideos, foreignKey: 'video_id' });
 
