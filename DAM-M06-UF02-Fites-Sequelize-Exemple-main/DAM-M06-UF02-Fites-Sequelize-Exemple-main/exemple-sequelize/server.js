@@ -58,7 +58,7 @@ app.use(expressLogger);
 app.use('/api/youtubers', rutesYoutuber);
 app.use('/api/videos', rutesVideo);
 app.use('/api/categories', rutesCategoria);
-app.use('api/llistes', rutesLlista)
+app.use('/api/llistes', rutesLlista)
 
 // Gestió centralitzada d'errors (importada del mòdul gestorErrors)
 app.use(gestorErrors);

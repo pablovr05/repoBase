@@ -12,7 +12,8 @@ const Llista = sequelize.define('Llista', {
         allowNull: false
     },
     descripcio: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: true
     },
 }, {
     tableName: 'llista' // Opcional: per assegurar que la taula es diu 'llista'
